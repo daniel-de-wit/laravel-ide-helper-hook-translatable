@@ -22,7 +22,7 @@ Run standard model generation commands as normal:
 When disabled, register the LaravelIdeHelperHookTranslatableServiceProvider manually by adding it to your config/app.php
 ```php
 /*
- * Package Service Providers...* Package Service Providers...
+ * Package Service Providers...
  */
  DanielDeWit\LaravelIdeHelperHookTranslatable\Providers\LaravelIdeHelperHookTranslatableServiceProvider::class,
 ```
