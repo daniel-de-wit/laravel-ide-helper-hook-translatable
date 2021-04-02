@@ -7,7 +7,7 @@ A Laravel Package for adding [Laravel Translatable](https://github.com/Astrotomi
 You can install the package via composer:
 
 ```bash
-composer require daniel-de-wit/laravel-ide-helper-hook-translatable
+composer require --dev daniel-de-wit/laravel-ide-helper-hook-translatable
 ```
 
 The Translatable Hook is loaded using [Package Discovery](https://laravel.com/docs/8.x/packages#package-discovery), when disabled read [Manual Installation](#manual-installation).
