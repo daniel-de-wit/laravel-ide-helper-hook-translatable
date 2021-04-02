@@ -18,7 +18,7 @@
     "require": {
         "php": "^7.3|^8.0",
         "astrotomic/laravel-translatable": "^11.9",
-        "barryvdh/laravel-ide-helper": "dev-master#f0c138c4fdb32b2f30362a7f8bc08e2a96cf9c20",
+        "barryvdh/laravel-ide-helper": "^2.9.2",
         "illuminate/database": "^6.9|^7.0|^8.0"
     },
     "require-dev": {
