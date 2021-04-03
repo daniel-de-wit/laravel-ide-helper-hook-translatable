@@ -50,7 +50,7 @@ class TranslatableHook implements ModelHookInterface
             }
 
             if (in_array($name, $modelTranslation->getDates())) {
-                $type = $this->dateClass;
+                $type = $this->getDateClass();
             } else {
                 $type = $column->getType()->getName();
                 switch ($type) {
@@ -99,5 +99,12 @@ class TranslatableHook implements ModelHookInterface
                 true,
             );
         }
+    }
+
+    protected function getDateClass(): string
+    {
+        return class_exists(\Illuminate\Support\Facades\Date::class)
+            ? '\\' . get_class(\Illuminate\Support\Facades\Date::now())
+            : '\Illuminate\Support\Carbon';
     }
 }
