@@ -30,6 +30,9 @@
         }
     },
     "autoload-dev": {
+        "psr-4": {
+            "DanielDeWit\\LaravelIdeHelperHookTranslatable\\Tests\\": "tests"
+        }
     },
     "scripts": {
     },
