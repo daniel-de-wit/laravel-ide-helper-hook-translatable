@@ -19,6 +19,8 @@ class TranslatableHook implements ModelHookInterface
         }
 
         $className = $model->getTranslationModelName();
+
+        /** @var Model $modelTranslation */
         $modelTranslation = $command->getLaravel()->make($className);
 
         $table = $modelTranslation->getConnection()->getTablePrefix() . $modelTranslation->getTable();
