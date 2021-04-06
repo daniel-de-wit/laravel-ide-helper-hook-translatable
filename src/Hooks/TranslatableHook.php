@@ -7,6 +7,7 @@ namespace DanielDeWit\LaravelIdeHelperHookTranslatable\Hooks;
 use Astrotomic\Translatable\Contracts\Translatable;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
+use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Database\Eloquent\Model;
 
 class TranslatableHook implements ModelHookInterface
@@ -18,7 +19,7 @@ class TranslatableHook implements ModelHookInterface
         }
 
         $className = $model->getTranslationModelName();
-        $modelTranslation = new $className;
+        $modelTranslation = $command->getLaravel()->make($className);
 
         $table = $modelTranslation->getConnection()->getTablePrefix() . $modelTranslation->getTable();
         $schema = $modelTranslation->getConnection()->getDoctrineSchemaManager();
@@ -26,7 +27,11 @@ class TranslatableHook implements ModelHookInterface
         $databasePlatform->registerDoctrineTypeMapping('enum', 'string');
 
         $platformName = $databasePlatform->getName();
-        $customTypes = config()->get("ide-helper.custom_db_types.{$platformName}", []);
+
+        /** @var Config $config */
+        $config = $command->getLaravel()->make(Config::class);
+
+        $customTypes = $config->get("ide-helper.custom_db_types.{$platformName}", []);
         foreach ($customTypes as $yourTypeName => $doctrineTypeName) {
             $databasePlatform->registerDoctrineTypeMapping($yourTypeName, $doctrineTypeName);
         }
