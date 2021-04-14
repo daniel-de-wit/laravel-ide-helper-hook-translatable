@@ -13,16 +13,18 @@ class TranslatableHook implements ModelHookInterface
 {
     public function run(ModelsCommand $command, Model $model): void
     {
-        if (!$model instanceof Translatable) {
-            return;
-        }
-
-        if (! method_exists($model, 'getTranslationModelName') || ! property_exists($model, 'translatedAttributes')) {
+        if (
+            ! $model instanceof Translatable ||
+            ! method_exists($model, 'getTranslationModelName') ||
+            ! property_exists($model, 'translatedAttributes')
+        ) {
             return;
         }
 
         $className = $model->getTranslationModelName();
-        $modelTranslation = new $className;
+
+        /** @var Model $modelTranslation */
+        $modelTranslation = $command->getLaravel()->make($className);
 
         $table = $modelTranslation->getConnection()->getTablePrefix() . $modelTranslation->getTable();
         $schema = $modelTranslation->getConnection()->getDoctrineSchemaManager();
@@ -30,8 +32,11 @@ class TranslatableHook implements ModelHookInterface
         $databasePlatform->registerDoctrineTypeMapping('enum', 'string');
 
         $platformName = $databasePlatform->getName();
-        $customTypes = config()->get("ide-helper.custom_db_types.{$platformName}", []);
 
+        /** @var Config $config */
+        $config = $command->getLaravel()->make(Config::class);
+
+        $customTypes = $config->get("ide-helper.custom_db_types.{$platformName}", []);
         foreach ($customTypes as $yourTypeName => $doctrineTypeName) {
             $databasePlatform->registerDoctrineTypeMapping($yourTypeName, $doctrineTypeName);
         }
@@ -54,40 +59,44 @@ class TranslatableHook implements ModelHookInterface
                 continue;
             }
 
-            $type = $column->getType()->getName();
-            switch ($type) {
-                case 'string':
-                case 'text':
-                case 'date':
-                case 'time':
-                case 'guid':
-                case 'datetimetz':
-                case 'datetime':
-                case 'decimal':
-                    $type = 'string';
-                    break;
-                case 'integer':
-                case 'bigint':
-                case 'smallint':
-                    $type = 'integer';
-                    break;
-                case 'boolean':
-                    switch (config('database.default')) {
-                        case 'sqlite':
-                        case 'mysql':
-                            $type = 'integer';
-                            break;
-                        default:
-                            $type = 'boolean';
-                            break;
-                    }
-                    break;
-                case 'float':
-                    $type = 'float';
-                    break;
-                default:
-                    $type = 'mixed';
-                    break;
+            if (in_array($name, $modelTranslation->getDates())) {
+                $type = $this->getDateClass();
+            } else {
+                $type = $column->getType()->getName();
+                switch ($type) {
+                    case 'string':
+                    case 'text':
+                    case 'date':
+                    case 'time':
+                    case 'guid':
+                    case 'datetimetz':
+                    case 'datetime':
+                    case 'decimal':
+                        $type = 'string';
+                        break;
+                    case 'integer':
+                    case 'bigint':
+                    case 'smallint':
+                        $type = 'integer';
+                        break;
+                    case 'boolean':
+                        switch (config('database.default')) {
+                            case 'sqlite':
+                            case 'mysql':
+                                $type = 'integer';
+                                break;
+                            default:
+                                $type = 'boolean';
+                                break;
+                        }
+                        break;
+                    case 'float':
+                        $type = 'float';
+                        break;
+                    default:
+                        $type = 'mixed';
+                        break;
+                }
             }
 
             $comment = $column->getComment();
@@ -100,5 +109,13 @@ class TranslatableHook implements ModelHookInterface
                 true,
             );
         }
+    }
+
+
+    protected function getDateClass(): string
+    {
+        return class_exists(\Illuminate\Support\Facades\Date::class)
+            ? '\\' . get_class(\Illuminate\Support\Facades\Date::now())
+            : '\Illuminate\Support\Carbon';
     }
 }
