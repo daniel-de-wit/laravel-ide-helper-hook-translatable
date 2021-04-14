@@ -8,6 +8,7 @@ use Astrotomic\Translatable\Contracts\Translatable;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 
 class TranslatableHook implements ModelHookInterface
 {
