@@ -22,6 +22,7 @@
         "illuminate/database": "^6.9|^7.0|^8.0"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.18",
         "nunomaduro/larastan": "^0.7.2",
         "orchestra/testbench": "^6.7",
         "phpstan/phpstan-mockery": "^0.12.13",
@@ -40,7 +41,17 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/phpunit"
+        "analyze": "vendor/phpstan/phpstan/phpstan analyse",
+        "check-style": [
+            "php-cs-fixer fix --diff --diff-format=udiff --dry-run",
+            "php-cs-fixer fix --diff --diff-format=udiff --dry-run --config=.php_cs.tests.php"
+        ],
+        "coverage": "vendor/bin/phpunit",
+        "fix-style": [
+            "php-cs-fixer fix",
+            "php-cs-fixer fix --config=.php_cs.tests.php"
+        ],
+        "test": "vendor/bin/phpunit --no-coverage"
     },
     "config": {
         "sort-packages": true

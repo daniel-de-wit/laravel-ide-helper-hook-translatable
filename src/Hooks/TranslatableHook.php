@@ -49,7 +49,7 @@ class TranslatableHook implements ModelHookInterface
 
         $columns = $schema->listTableColumns($table, $database);
 
-        if (!$columns) {
+        if (! $columns) {
             return;
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DanielDeWit\LaravelIdeHelperHookTranslatable\Tests\Integration;
 
 use DanielDeWit\LaravelIdeHelperHookTranslatable\Hooks\TranslatableHook;
