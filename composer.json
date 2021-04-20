@@ -1,5 +1,6 @@
 {
     "name": "daniel-de-wit/laravel-ide-helper-hook-translatable",
+    "type": "library",
     "description": "Add Laravel Translatable support to Laravel IDE Helper",
     "keywords": [
         "laravel-ide-helper",
@@ -7,7 +8,6 @@
     ],
     "homepage": "https://github.com/daniel-de-wit/laravel-ide-helper-hook-translatable",
     "license": "MIT",
-    "type": "library",
     "authors": [
         {
             "name": "Daniel de Wit",
@@ -16,10 +16,10 @@
         }
     ],
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^7.3 || ^8.0",
         "astrotomic/laravel-translatable": "^11.9",
         "barryvdh/laravel-ide-helper": "^2.9.2",
-        "illuminate/database": "^6.9|^7.0|^8.0"
+        "illuminate/database": "^6.9 || ^7.0 || ^8.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.18",
@@ -29,6 +29,16 @@
         "phpstan/phpstan-phpunit": "^0.12.18",
         "phpunit/phpunit": "^9.5",
         "thecodingmachine/phpstan-safe-rule": "^1.0"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "DanielDeWit\\LaravelIdeHelperHookTranslatable\\Providers\\LaravelIdeHelperHookTranslatableServiceProvider"
+            ]
+        }
     },
     "autoload": {
         "psr-4": {
@@ -52,15 +62,5 @@
             "php-cs-fixer fix --config=.php_cs.tests.php"
         ],
         "test": "vendor/bin/phpunit --no-coverage"
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "DanielDeWit\\LaravelIdeHelperHookTranslatable\\Providers\\LaravelIdeHelperHookTranslatableServiceProvider"
-            ]
-        }
     }
 }
