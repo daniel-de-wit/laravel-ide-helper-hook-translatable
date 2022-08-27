@@ -4,6 +4,7 @@
     "license": "MIT",
     "type": "library",
     "keywords": [
+        "dev",
         "laravel-ide-helper",
         "laravel-translatable"
     ],
