@@ -9,6 +9,7 @@ use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class TranslatableHook implements ModelHookInterface
 {
@@ -28,43 +29,29 @@ class TranslatableHook implements ModelHookInterface
         $modelTranslation = $command->getLaravel()->make($className);
 
         $table = $modelTranslation->getConnection()->getTablePrefix() . $modelTranslation->getTable();
-        $schema = $modelTranslation->getConnection()->getDoctrineSchemaManager();
-        $databasePlatform = $schema->getDatabasePlatform();
-        $databasePlatform->registerDoctrineTypeMapping('enum', 'string');
 
-        $platformName = $databasePlatform->getName();
-
-        /** @var Config $config */
-        $config = $command->getLaravel()->make(Config::class);
-
-        $customTypes = $config->get("ide-helper.custom_db_types.{$platformName}", []);
-        foreach ($customTypes as $yourTypeName => $doctrineTypeName) {
-            $databasePlatform->registerDoctrineTypeMapping($yourTypeName, $doctrineTypeName);
-        }
-
-        $database = null;
-        if (strpos($table, '.')) {
-            [$database, $table] = explode('.', $table);
-        }
-
-        $columns = $schema->listTableColumns($table, $database);
+        $columns = $modelTranslation->getConnection()->getSchemaBuilder()->getColumns($table);
 
         if (! $columns) {
             return;
         }
 
         foreach ($columns as $column) {
-            $name = $column->getName();
+            $name = $column['name'];
 
             if (! in_array($name, $model->translatedAttributes)) {
                 continue;
             }
 
+            // Handle dates
             if (in_array($name, $modelTranslation->getDates())) {
                 $type = $this->getDateClass();
             } else {
-                $type = $column->getType()->getName();
+                $type = $column['type_name'];
+
+                // Map the column types to PHP types
                 switch ($type) {
+                    case 'varchar':
                     case 'string':
                     case 'text':
                     case 'date':
@@ -100,23 +87,14 @@ class TranslatableHook implements ModelHookInterface
                 }
             }
 
-            $comment = $column->getComment();
             $command->setProperty(
                 $name,
                 $type,
                 true,
                 true,
-                $comment,
-                true,
+                null,
+                $column['nullable'],
             );
         }
-    }
-
-
-    protected function getDateClass(): string
-    {
-        return class_exists(\Illuminate\Support\Facades\Date::class)
-            ? '\\' . get_class(\Illuminate\Support\Facades\Date::now())
-            : '\Illuminate\Support\Carbon';
     }
 }
