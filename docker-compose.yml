@@ -1,0 +1,5 @@
+services:
+  app:
+    build: docker
+    volumes:
+      - .:/var/www/html
