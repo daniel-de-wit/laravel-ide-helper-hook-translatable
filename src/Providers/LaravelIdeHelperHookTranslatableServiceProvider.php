@@ -49,6 +49,6 @@ class LaravelIdeHelperHookTranslatableServiceProvider extends ServiceProvider im
 
         $config->set('ide-helper.model_hooks', array_merge([
             TranslatableHook::class,
-        ], $config->get('ide-helper.model_hooks', [])));
+        ], (array) $config->get('ide-helper.model_hooks', [])));
     }
 }
