@@ -6,7 +6,6 @@ namespace DanielDeWit\LaravelIdeHelperHookTranslatable\Providers;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use DanielDeWit\LaravelIdeHelperHookTranslatable\Hooks\TranslatableHook;
-use Illuminate\Console\Command;
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
@@ -16,10 +15,10 @@ class LaravelIdeHelperHookTranslatableServiceProvider extends ServiceProvider im
     /**
      * @var string
      */
-    const ModelsCommandAlias = 'laravel-ide-helper-hook-translatable-command-alias';
+    const ModelsCommandAlias = 'ModelsCommand__LaravelIdeHelperHookTranslatable__alias';
 
     /**
-     * @return list<class-string<Command>|string>
+     * @return list<string>
      */
     public function provides(): array
     {
