@@ -7,18 +7,14 @@ namespace DanielDeWit\LaravelIdeHelperHookTranslatable\Hooks;
 use Astrotomic\Translatable\Contracts\Translatable;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
-use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Schema;
 
 class TranslatableHook implements ModelHookInterface
 {
     public function run(ModelsCommand $command, Model $model): void
     {
         if (
-            ! $model instanceof Translatable ||
-            ! method_exists($model, 'getTranslationModelName') ||
-            ! property_exists($model, 'translatedAttributes')
+            ! $model instanceof Translatable || ! method_exists($model, 'getTranslationModelName') || ! property_exists($model, 'translatedAttributes')
         ) {
             return;
         }
@@ -28,7 +24,7 @@ class TranslatableHook implements ModelHookInterface
         /** @var Model $modelTranslation */
         $modelTranslation = $command->getLaravel()->make($className);
 
-        $table = $modelTranslation->getConnection()->getTablePrefix() . $modelTranslation->getTable();
+        $table = $modelTranslation->getConnection()->getTablePrefix().$modelTranslation->getTable();
 
         $columns = $modelTranslation->getConnection()->getSchemaBuilder()->getColumns($table);
 
@@ -96,5 +92,12 @@ class TranslatableHook implements ModelHookInterface
                 $column['nullable'],
             );
         }
+    }
+
+    protected function getDateClass(): string
+    {
+        return class_exists(\Illuminate\Support\Facades\Date::class)
+            ? '\\'.get_class(\Illuminate\Support\Facades\Date::now())
+            : '\Illuminate\Support\Carbon';
     }
 }

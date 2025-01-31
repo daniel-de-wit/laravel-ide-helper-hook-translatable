@@ -1,6 +1,6 @@
 name: run-static-analysis
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
     static-analysis:
@@ -8,31 +8,31 @@ jobs:
         strategy:
             fail-fast: true
             matrix:
-                os: [ubuntu-latest]
-                php: [8.0]
-                dependency-version: [prefer-stable]
+                os: [ ubuntu-latest ]
+                php: [ 8.1 ]
+                dependency-version: [ prefer-stable ]
 
         name: P${{ matrix.php }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 
         steps:
-            - name: Checkout code
-              uses: actions/checkout@v2
+            -   name: Checkout code
+                uses: actions/checkout@v2
 
-            - name: Cache dependencies
-              uses: actions/cache@v2
-              with:
-                  path: ~/.composer/cache/files
-                  key: dependencies-laravel-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+            -   name: Cache dependencies
+                uses: actions/cache@v2
+                with:
+                    path: ~/.composer/cache/files
+                    key: dependencies-laravel-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
 
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: ${{ matrix.php }}
-                  extensions: dom, curl, libxml, mbstring, zip
-                  coverage: pcov
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php }}
+                    extensions: dom, curl, libxml, mbstring, zip
+                    coverage: pcov
 
-            - name: Install dependencies
-              run: composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
+            -   name: Install dependencies
+                run: composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
 
-            - name: Execute static code analysis
-              run: composer analyze
+            -   name: Execute static code analysis
+                run: composer analyze
